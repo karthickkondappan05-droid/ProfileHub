@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Account",
+      "description": "Authenticated user profile and metadata in ProfileHub.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["USER", "ADMIN"] },
+        "accountStatus": { "type": "string", "enum": ["ACTIVE", "SUSPENDED", "DELETED"] },
+        "profileId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role", "accountStatus", "createdAt"]
+    },
+    "Profile": {
+      "title": "Public Profile",
+      "description": "User digital identity and resume content.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "username": { "type": "string", "maxLength": 64, "pattern": "^[a-z0-9-]+$" },
+        "fullName": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "headline": { "type": "string", "maxLength": 200 },
+        "bio": { "type": "string", "maxLength": 2000 },
+        "profession": { "type": "string", "maxLength": 100 },
+        "industry": { "type": "string", "maxLength": 100 },
+        "location": { "type": "string", "maxLength": 120 },
+        "country": { "type": "string", "maxLength": 80 },
+        "languages": { "type": "string" },
+        "phone": { "type": "string", "maxLength": 40 },
+        "email": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 200 },
+        "age": { "type": "string", "maxLength": 10 },
+        "birthYear": { "type": "string", "maxLength": 10 },
+        "dateOfBirth": { "type": "string", "maxLength": 30 },
+        "avatarUrl": { "type": "string", "maxLength": 1000 },
+        "coverUrl": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["DRAFT", "PUBLISHED", "UNPUBLISHED", "SUSPENDED", "DELETED"] },
+        "verificationStatus": { "type": "string", "enum": ["UNVERIFIED", "EMAIL_VERIFIED", "PROFESSIONALLY_VERIFIED", "ADMIN_VERIFIED"] },
+        "allowSearchIndexing": { "type": "string" },
+        "privacySettings": { "type": "string" },
+        "viewsCount": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "username", "fullName", "status", "createdAt"]
+    },
+    "Report": {
+      "title": "Profile Abuse Report",
+      "description": "User generated reports against inappropriate profiles.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "profileId": { "type": "string", "maxLength": 128 },
+        "reportedUsername": { "type": "string", "maxLength": 64 },
+        "reporterEmail": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 60 },
+        "reason": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["PENDING", "RESOLVED", "DISMISSED"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "profileId", "category", "reason", "status", "createdAt"]
+    },
+    "VerificationRequest": {
+      "title": "Verification Request",
+      "description": "Identity verification submissions for badge approval.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "profileId": { "type": "string", "maxLength": 128 },
+        "requestedType": { "type": "string", "enum": ["PROFESSIONAL", "PUBLIC_FIGURE", "IDENTITY"] },
+        "proofLinks": { "type": "string", "maxLength": 2000 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "profileId", "requestedType", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User account information, role, and preferences."
+    },
+    "/profiles/{profileId}": {
+      "schema": "Profile",
+      "description": "Public profiles with privacy settings and professional data."
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Reports submitted by community members."
+    },
+    "/verificationRequests/{requestId}": {
+      "schema": "VerificationRequest",
+      "description": "User submitted verification badges requests."
+    }
+  }
+}

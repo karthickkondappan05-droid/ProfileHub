@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidProfile(data) {
+      return data.id is string &&
+             data.userId is string &&
+             data.username is string;
+    }
+
+    function isValidReport(data) {
+      return data.id is string &&
+             data.profileId is string &&
+             data.category is string;
+    }
+
+    function isValidVerificationRequest(data) {
+      return data.id is string &&
+             data.userId is string &&
+             data.profileId is string;
+    }
+
+    // User accounts collection
+    match /users/{userId} {
+      allow read, write: if isValidId(userId);
+    }
+
+    // Admin reference documents
+    match /admins/{adminId} {
+      allow read, write: if true;
+    }
+
+    // Profiles collection
+    match /profiles/{profileId} {
+      allow read: if true;
+      allow create, update: if isValidId(profileId) && isValidProfile(incoming());
+      allow delete: if isValidId(profileId);
+
+      // Subcollections under profiles
+      match /{subcollection}/{docId} {
+        allow read, write: if isValidId(docId);
+      }
+    }
+
+    // Reports collection
+    match /reports/{reportId} {
+      allow read, write: if isValidId(reportId);
+    }
+
+    // Verification Requests
+    match /verificationRequests/{requestId} {
+      allow read, write: if isValidId(requestId);
+    }
+
+    // Profile Analytics / Views
+    match /profileViews/{viewId} {
+      allow read, write: if isValidId(viewId);
+    }
+  }
+}
+
