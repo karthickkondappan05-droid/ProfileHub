@@ -1,0 +1,6 @@
+{
+  "name": "ProfileHub",
+  "description": "Privacy-first searchable personal profile platform with customizable visibility, SEO, structured data, QR code sharing, and AI assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
